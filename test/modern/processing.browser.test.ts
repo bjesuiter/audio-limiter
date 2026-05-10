@@ -148,6 +148,35 @@ describe('Limiter audio processing', () => {
     expectBounded(rendered);
   });
 
+  it.runIf(supportsOfflineAudioWorklet())('delays audio by the configured lookahead', async () => {
+    const lookaheadSamples = 128;
+    const length = 512;
+    const input = new Float32Array(length);
+    input[0] = 0.25;
+
+    const rendered = await renderBufferSource(input, {
+      lookahead: lookaheadSamples / sampleRate,
+      threshold: 0,
+      attack: 0,
+      release: 0,
+    });
+
+    const data = rendered.getChannelData(0);
+    let peakIndex = 0;
+    let peakValue = 0;
+    for (let i = 0; i < data.length; i += 1) {
+      const absolute = Math.abs(data[i]!);
+      if (absolute > peakValue) {
+        peakValue = absolute;
+        peakIndex = i;
+      }
+    }
+
+    expect(peakIndex).toBe(lookaheadSamples);
+    expect(peakValue).toBeCloseTo(0.25, 5);
+    expect(data.slice(0, lookaheadSamples).every((sample) => sample === 0)).toBe(true);
+  });
+
   it.runIf(supportsOfflineAudioWorklet())('switches to bypass mode', async () => {
     const length = Math.floor(sampleRate * 0.5);
     const rendered = await renderBufferSource(
