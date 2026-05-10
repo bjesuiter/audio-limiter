@@ -1,14 +1,18 @@
-import { describe, expect, it } from 'vitest';
-import { createLimiter, type CreateLimiterOptions } from '../src/index';
+import { describe, expect, it } from "vitest";
+import { createLimiter, type CreateLimiterOptions } from "../src/index";
 
 const sampleRate = 44_100;
 
 function supportsOfflineAudioWorklet(): boolean {
-  return typeof OfflineAudioContext !== 'undefined'
-    && 'audioWorklet' in OfflineAudioContext.prototype;
+  return (
+    typeof OfflineAudioContext !== "undefined" && "audioWorklet" in OfflineAudioContext.prototype
+  );
 }
 
-function createOfflineContext(length = Math.floor(sampleRate * 0.5), numberOfChannels = 2): OfflineAudioContext {
+function createOfflineContext(
+  length = Math.floor(sampleRate * 0.5),
+  numberOfChannels = 2,
+): OfflineAudioContext {
   return new OfflineAudioContext({ length, numberOfChannels, sampleRate });
 }
 
@@ -23,9 +27,12 @@ function expectBounded(buffer: AudioBuffer, bound = 1): void {
   }
 }
 
-async function renderSine(gainValue: number, limiterOptions?: CreateLimiterOptions): Promise<AudioBuffer> {
+async function renderSine(
+  gainValue: number,
+  limiterOptions?: CreateLimiterOptions,
+): Promise<AudioBuffer> {
   const context = createOfflineContext();
-  const oscillator = new OscillatorNode(context, { type: 'sine', frequency: 440 });
+  const oscillator = new OscillatorNode(context, { type: "sine", frequency: 440 });
   const gain = new GainNode(context, { gain: gainValue });
   const limiter = await createLimiter(context, { lookahead: 0, ...limiterOptions });
 
@@ -56,27 +63,33 @@ async function renderBufferSource(
   return context.startRendering();
 }
 
-describe('Limiter audio processing', () => {
-  it.runIf(supportsOfflineAudioWorklet())('leaves below-threshold audio untouched when lookahead is disabled', async () => {
-    const referenceContext = createOfflineContext();
-    const referenceOscillator = new OscillatorNode(referenceContext, { type: 'sine', frequency: 440 });
-    const referenceGain = new GainNode(referenceContext, { gain: 0.5 });
-    referenceOscillator.connect(referenceGain).connect(referenceContext.destination);
-    referenceOscillator.start(0);
-    const reference = await referenceContext.startRendering();
+describe("Limiter audio processing", () => {
+  it.runIf(supportsOfflineAudioWorklet())(
+    "leaves below-threshold audio untouched when lookahead is disabled",
+    async () => {
+      const referenceContext = createOfflineContext();
+      const referenceOscillator = new OscillatorNode(referenceContext, {
+        type: "sine",
+        frequency: 440,
+      });
+      const referenceGain = new GainNode(referenceContext, { gain: 0.5 });
+      referenceOscillator.connect(referenceGain).connect(referenceContext.destination);
+      referenceOscillator.start(0);
+      const reference = await referenceContext.startRendering();
 
-    const limited = await renderSine(0.5, { lookahead: 0 });
+      const limited = await renderSine(0.5, { lookahead: 0 });
 
-    const referenceData = reference.getChannelData(0);
-    const limitedData = limited.getChannelData(0);
-    for (let i = 0; i < referenceData.length; i += 1) {
-      expect(limitedData[i]!).toBeCloseTo(referenceData[i]!, 5);
-    }
-  });
+      const referenceData = reference.getChannelData(0);
+      const limitedData = limited.getChannelData(0);
+      for (let i = 0; i < referenceData.length; i += 1) {
+        expect(limitedData[i]!).toBeCloseTo(referenceData[i]!, 5);
+      }
+    },
+  );
 
-  it.runIf(supportsOfflineAudioWorklet())('limits a strongly gained sine wave', async () => {
+  it.runIf(supportsOfflineAudioWorklet())("limits a strongly gained sine wave", async () => {
     const context = createOfflineContext();
-    const oscillator = new OscillatorNode(context, { type: 'sine', frequency: 440 });
+    const oscillator = new OscillatorNode(context, { type: "sine", frequency: 440 });
     const gain = new GainNode(context, { gain: 5 });
     oscillator.connect(gain).connect(context.destination);
     oscillator.start(0);
@@ -87,7 +100,7 @@ describe('Limiter audio processing', () => {
     expectBounded(limited);
   });
 
-  it.runIf(supportsOfflineAudioWorklet())('limits constant-power audio buffers', async () => {
+  it.runIf(supportsOfflineAudioWorklet())("limits constant-power audio buffers", async () => {
     const rendered = await renderBufferSource(new Float32Array(sampleRate).fill(2), {
       threshold: -2,
       attack: 0,
@@ -97,7 +110,7 @@ describe('Limiter audio processing', () => {
     expectBounded(rendered);
   });
 
-  it.runIf(supportsOfflineAudioWorklet())('limits random wide-gain noise', async () => {
+  it.runIf(supportsOfflineAudioWorklet())("limits random wide-gain noise", async () => {
     const noise = Float32Array.from({ length: sampleRate }, (_, index) => {
       const x = Math.sin(index * 12.9898) * 43758.5453;
       return (x - Math.floor(x)) * 6 - 3;
@@ -107,48 +120,56 @@ describe('Limiter audio processing', () => {
     expectBounded(rendered);
   });
 
-  it.runIf(supportsOfflineAudioWorklet())('responds to preGain and postGain parameters', async () => {
-    const stepped = new Float32Array(Array.from({ length: sampleRate }, (_, index) => {
-      const values = [-0.25, 0.25, -0.5, 0.5];
-      return values[index % values.length]!;
-    }));
+  it.runIf(supportsOfflineAudioWorklet())(
+    "responds to preGain and postGain parameters",
+    async () => {
+      const stepped = new Float32Array(
+        Array.from({ length: sampleRate }, (_, index) => {
+          const values = [-0.25, 0.25, -0.5, 0.5];
+          return values[index % values.length]!;
+        }),
+      );
 
-    const rendered = await renderBufferSource(stepped, {
-      threshold: -2,
-      preGain: 8,
-      postGain: 1.5,
-      attack: 0,
-      release: 0,
-    });
+      const rendered = await renderBufferSource(stepped, {
+        threshold: -2,
+        preGain: 8,
+        postGain: 1.5,
+        attack: 0,
+        release: 0,
+      });
 
-    expectBounded(rendered);
-  });
+      expectBounded(rendered);
+    },
+  );
 
-  it.runIf(supportsOfflineAudioWorklet())('supports scheduled AudioParam changes while rendering', async () => {
-    const length = sampleRate * 5;
-    const input = Float32Array.from({ length }, (_, index) => Math.sin(index * 0.1));
+  it.runIf(supportsOfflineAudioWorklet())(
+    "supports scheduled AudioParam changes while rendering",
+    async () => {
+      const length = sampleRate * 5;
+      const input = Float32Array.from({ length }, (_, index) => Math.sin(index * 0.1));
 
-    const rendered = await renderBufferSource(
-      input,
-      { threshold: -2, preGain: 8, postGain: 1.5, attack: 0, release: 0 },
-      (limiter) => {
-        limiter.parameters.get('attack')?.setValueAtTime(0, 0);
-        limiter.parameters.get('attack')?.linearRampToValueAtTime(0.1, 2);
-        limiter.parameters.get('release')?.setValueAtTime(0, 0);
-        limiter.parameters.get('release')?.linearRampToValueAtTime(0.1, 2);
-        limiter.parameters.get('preGain')?.setValueAtTime(0, 0);
-        limiter.parameters.get('preGain')?.linearRampToValueAtTime(10, 2);
-        limiter.parameters.get('postGain')?.setValueAtTime(0, 0);
-        limiter.parameters.get('postGain')?.linearRampToValueAtTime(-10, 2);
-        limiter.parameters.get('threshold')?.setValueAtTime(0, 0);
-        limiter.parameters.get('threshold')?.linearRampToValueAtTime(-10, 2);
-      },
-    );
+      const rendered = await renderBufferSource(
+        input,
+        { threshold: -2, preGain: 8, postGain: 1.5, attack: 0, release: 0 },
+        (limiter) => {
+          limiter.parameters.get("attack")?.setValueAtTime(0, 0);
+          limiter.parameters.get("attack")?.linearRampToValueAtTime(0.1, 2);
+          limiter.parameters.get("release")?.setValueAtTime(0, 0);
+          limiter.parameters.get("release")?.linearRampToValueAtTime(0.1, 2);
+          limiter.parameters.get("preGain")?.setValueAtTime(0, 0);
+          limiter.parameters.get("preGain")?.linearRampToValueAtTime(10, 2);
+          limiter.parameters.get("postGain")?.setValueAtTime(0, 0);
+          limiter.parameters.get("postGain")?.linearRampToValueAtTime(-10, 2);
+          limiter.parameters.get("threshold")?.setValueAtTime(0, 0);
+          limiter.parameters.get("threshold")?.linearRampToValueAtTime(-10, 2);
+        },
+      );
 
-    expectBounded(rendered);
-  });
+      expectBounded(rendered);
+    },
+  );
 
-  it.runIf(supportsOfflineAudioWorklet())('delays audio by the configured lookahead', async () => {
+  it.runIf(supportsOfflineAudioWorklet())("delays audio by the configured lookahead", async () => {
     const lookaheadSamples = 128;
     const length = 512;
     const input = new Float32Array(length);
@@ -177,13 +198,13 @@ describe('Limiter audio processing', () => {
     expect(data.slice(0, lookaheadSamples).every((sample) => sample === 0)).toBe(true);
   });
 
-  it.runIf(supportsOfflineAudioWorklet())('switches to bypass mode', async () => {
+  it.runIf(supportsOfflineAudioWorklet())("switches to bypass mode", async () => {
     const length = Math.floor(sampleRate * 0.5);
     const rendered = await renderBufferSource(
       new Float32Array(length).fill(5),
       { threshold: -2, attack: 0, release: 0 },
       (limiter) => {
-        limiter.parameters.get('bypass')?.setValueAtTime(1, 0.25);
+        limiter.parameters.get("bypass")?.setValueAtTime(1, 0.25);
       },
     );
 

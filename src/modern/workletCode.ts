@@ -42,8 +42,12 @@ class LimiterProcessor extends AudioWorkletProcessor {
     const channelCount = options.outputChannelCount?.[0] ?? options.channelCount ?? 2;
     const lookahead = options.processorOptions?.lookahead ?? 0.005;
 
-    if (lookahead < 0 || lookahead > 10) {
-      throw new Error('Limiter lookahead must be between 0 and 10 seconds.');
+    if (!Number.isFinite(lookahead) || lookahead < 0 || lookahead > 10) {
+      throw new Error('Limiter lookahead must be a finite number between 0 and 10 seconds.');
+    }
+
+    if (!Number.isInteger(channelCount) || channelCount < 1) {
+      throw new Error('Limiter channelCount must be a positive integer.');
     }
 
     this.lookahead = lookahead;

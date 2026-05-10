@@ -1,19 +1,21 @@
-import { LimiterAudioWorkletNode } from './LimiterAudioWorkletNode';
-import { limiterWorkletCode } from './workletCode';
+import { LimiterAudioWorkletNode } from "./LimiterAudioWorkletNode";
+import { limiterParameterDescriptors } from "./parameters";
+import { limiterWorkletCode } from "./workletCode";
 import type {
   CreateLimiterNodeOptions,
   CreateLimiterOptions,
   LimiterParameterName,
   LoadLimiterWorkletOptions,
-} from './types';
+} from "./types";
 
-const processorName = 'limiter-processor';
-const loadedEmbeddedWorkletContexts = new WeakSet<BaseAudioContext>();
+const processorName = "limiter-processor";
+const embeddedWorkletLoadPromises = new WeakMap<BaseAudioContext, Promise<void>>();
 
 export async function createLimiter(
   context: BaseAudioContext,
   options: CreateLimiterOptions = {},
 ): Promise<LimiterAudioWorkletNode> {
+  validateOptions(options);
   await loadLimiterWorklet(
     context,
     options.workletUrl === undefined ? {} : { workletUrl: options.workletUrl },
@@ -25,23 +27,23 @@ export async function loadLimiterWorklet(
   context: BaseAudioContext,
   options: LoadLimiterWorkletOptions = {},
 ): Promise<void> {
-  if (options.workletUrl) {
+  if (options.workletUrl !== undefined) {
+    if (typeof options.workletUrl !== "string" && !(options.workletUrl instanceof URL)) {
+      throw new Error("Limiter workletUrl must be a string or URL.");
+    }
     await context.audioWorklet.addModule(options.workletUrl.toString());
     return;
   }
 
-  if (loadedEmbeddedWorkletContexts.has(context)) return;
+  const existingLoad = embeddedWorkletLoadPromises.get(context);
+  if (existingLoad) return existingLoad;
 
-  const blob = new Blob([limiterWorkletCode], {
-    type: 'application/javascript; charset=utf-8',
+  const load = loadEmbeddedWorklet(context).catch((error: unknown) => {
+    embeddedWorkletLoadPromises.delete(context);
+    throw error;
   });
-  const url = URL.createObjectURL(blob);
-  try {
-    await context.audioWorklet.addModule(url);
-    loadedEmbeddedWorkletContexts.add(context);
-  } finally {
-    URL.revokeObjectURL(url);
-  }
+  embeddedWorkletLoadPromises.set(context, load);
+  return load;
 }
 
 export function createLimiterNode(
@@ -50,25 +52,54 @@ export function createLimiterNode(
 ): LimiterAudioWorkletNode {
   validateOptions(options);
 
-  const channelCount = options.channelCount ?? 2;
-  const parameterData = createParameterData(options);
+  const lookahead = options.lookahead ?? 0.005;
+  const audioWorkletOptions = createAudioWorkletOptions(options);
+  const channelCount = audioWorkletOptions.channelCount ?? 2;
 
   return new LimiterAudioWorkletNode(context, processorName, {
-    ...options,
+    ...audioWorkletOptions,
     channelCount,
-    channelCountMode: options.channelCountMode ?? 'explicit',
-    numberOfInputs: options.numberOfInputs ?? 1,
-    numberOfOutputs: options.numberOfOutputs ?? 1,
-    outputChannelCount: options.outputChannelCount ?? [channelCount],
-    parameterData,
-    processorOptions: {
-      lookahead: options.lookahead ?? 0.005,
-    },
+    channelCountMode: audioWorkletOptions.channelCountMode ?? "explicit",
+    numberOfInputs: audioWorkletOptions.numberOfInputs ?? 1,
+    numberOfOutputs: audioWorkletOptions.numberOfOutputs ?? 1,
+    outputChannelCount: audioWorkletOptions.outputChannelCount ?? [channelCount],
+    parameterData: createParameterData(options),
+    processorOptions: { lookahead },
   });
 }
 
+async function loadEmbeddedWorklet(context: BaseAudioContext): Promise<void> {
+  const blob = new Blob([limiterWorkletCode], {
+    type: "application/javascript; charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  try {
+    await context.audioWorklet.addModule(url);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+function createAudioWorkletOptions(
+  options: CreateLimiterOptions,
+): Omit<AudioWorkletNodeOptions, "parameterData" | "processorOptions"> {
+  const audioWorkletOptions: CreateLimiterOptions = { ...options };
+  delete audioWorkletOptions.attack;
+  delete audioWorkletOptions.bypass;
+  delete audioWorkletOptions.lookahead;
+  delete audioWorkletOptions.postGain;
+  delete audioWorkletOptions.preGain;
+  delete audioWorkletOptions.release;
+  delete audioWorkletOptions.threshold;
+  delete audioWorkletOptions.workletUrl;
+  return audioWorkletOptions;
+}
+
 function createParameterData(
-  options: CreateLimiterNodeOptions,
+  options: Pick<
+    CreateLimiterNodeOptions,
+    "attack" | "bypass" | "postGain" | "preGain" | "release" | "threshold"
+  >,
 ): Partial<Record<LimiterParameterName, number>> {
   return {
     ...(options.attack === undefined ? {} : { attack: options.attack }),
@@ -81,27 +112,72 @@ function createParameterData(
 }
 
 function validateOptions(options: CreateLimiterNodeOptions): void {
-  const lookahead = options.lookahead ?? 0.005;
-  if (lookahead < 0 || lookahead > 10) {
-    throw new Error('Limiter lookahead must be between 0 and 10 seconds.');
+  validateFiniteRange("lookahead", options.lookahead ?? 0.005, 0, 10);
+  validateBypass(options.bypass);
+  validateInitialParameterValues(options);
+
+  if (
+    options.channelCount !== undefined &&
+    (!Number.isInteger(options.channelCount) || options.channelCount < 1)
+  ) {
+    throw new Error("Limiter channelCount must be a positive integer.");
   }
 
-  if (options.channelCount && options.outputChannelCount?.length) {
+  if (
+    options.outputChannelCount?.some(
+      (channelCount) => !Number.isInteger(channelCount) || channelCount < 1,
+    )
+  ) {
+    throw new Error("Limiter outputChannelCount values must be positive integers.");
+  }
+
+  if (options.channelCount !== undefined && options.outputChannelCount?.length) {
     const [firstOutputChannelCount] = options.outputChannelCount;
     if (firstOutputChannelCount !== options.channelCount) {
-      throw new Error('Limiter channelCount must match outputChannelCount[0].');
+      throw new Error("Limiter channelCount must match outputChannelCount[0].");
     }
   }
 
-  if (options.channelCountMode && options.channelCountMode !== 'explicit') {
+  if (options.channelCountMode && options.channelCountMode !== "explicit") {
     throw new Error('Limiter requires channelCountMode "explicit".');
   }
 
-  if (options.numberOfInputs && options.numberOfInputs !== 1) {
-    throw new Error('Limiter requires exactly one input.');
+  if (options.numberOfInputs !== undefined && !Number.isInteger(options.numberOfInputs)) {
+    throw new Error("Limiter numberOfInputs must be an integer.");
   }
 
-  if (options.numberOfOutputs && options.numberOfOutputs !== 1) {
-    throw new Error('Limiter requires exactly one output.');
+  if (options.numberOfInputs !== undefined && options.numberOfInputs !== 1) {
+    throw new Error("Limiter requires exactly one input.");
+  }
+
+  if (options.numberOfOutputs !== undefined && !Number.isInteger(options.numberOfOutputs)) {
+    throw new Error("Limiter numberOfOutputs must be an integer.");
+  }
+
+  if (options.numberOfOutputs !== undefined && options.numberOfOutputs !== 1) {
+    throw new Error("Limiter requires exactly one output.");
+  }
+}
+
+function validateBypass(value: boolean | undefined): void {
+  if (value !== undefined && typeof value !== "boolean") {
+    throw new Error("Limiter bypass must be a boolean.");
+  }
+}
+
+function validateInitialParameterValues(options: CreateLimiterNodeOptions): void {
+  for (const descriptor of limiterParameterDescriptors) {
+    if (descriptor.name === "bypass") continue;
+
+    const value = options[descriptor.name];
+    if (value !== undefined) {
+      validateFiniteRange(descriptor.name, value, descriptor.minValue, descriptor.maxValue);
+    }
+  }
+}
+
+function validateFiniteRange(name: string, value: number, min: number, max: number): void {
+  if (!Number.isFinite(value) || value < min || value > max) {
+    throw new Error(`Limiter ${name} must be a finite number between ${min} and ${max}.`);
   }
 }

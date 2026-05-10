@@ -2,6 +2,17 @@
   "name": "audio-limiter",
   "version": "0.1.0",
   "description": "Modern AudioWorklet limiter with explicit factory API",
+  "keywords": [
+    "audio",
+    "limiter",
+    "web-audio",
+    "worklet"
+  ],
+  "license": "MIT",
+  "author": "bjesuiter@gmail.com",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -18,25 +29,21 @@
       }
     }
   },
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "clean": "rm -rf dist .tmp",
     "type-check": "tsc --noEmit",
     "build": "tsdown",
+    "lint": "oxlint src test tsdown.config.ts vitest.config.ts",
+    "format": "oxfmt src test tsdown.config.ts vitest.config.ts AGENTS.md README.md package.json",
+    "format:check": "oxfmt --check src test tsdown.config.ts vitest.config.ts AGENTS.md README.md package.json",
     "test": "vitest run",
     "test:browser": "vitest run --browser",
-    "prepack": "npm run clean && npm run type-check && npm run build"
+    "prepack": "bun run clean && bun run type-check && bun run build"
   },
-  "keywords": [
-    "audio",
-    "limiter",
-    "worklet",
-    "web-audio"
-  ],
-  "author": "bjesuiter@gmail.com",
-  "license": "MIT",
   "devDependencies": {
     "@types/node": "^25.6.2",
     "@vitest/browser": "^4.1.5",

@@ -13,7 +13,7 @@ npm install audio-limiter
 ## Usage
 
 ```ts
-import { createLimiter } from 'audio-limiter';
+import { createLimiter } from "audio-limiter";
 
 const context = new AudioContext();
 const limiter = await createLimiter(context, {
@@ -55,7 +55,7 @@ By default, the AudioWorklet processor is loaded from an embedded Blob URL. If y
 
 ```ts
 const limiter = await createLimiter(context, {
-  workletUrl: '/assets/limiter-worklet.js',
+  workletUrl: "/assets/limiter-worklet.js",
 });
 ```
 
@@ -64,7 +64,7 @@ const limiter = await createLimiter(context, {
 For most apps, use `createLimiter()`. If you want to preload the worklet during app setup and construct nodes synchronously later, use the advanced helpers:
 
 ```ts
-import { createLimiterNode, loadLimiterWorklet } from 'audio-limiter';
+import { createLimiterNode, loadLimiterWorklet } from "audio-limiter";
 
 await loadLimiterWorklet(context);
 
@@ -80,7 +80,7 @@ const limiter = createLimiterNode(context, {
 
 ```ts
 await loadLimiterWorklet(context, {
-  workletUrl: '/assets/limiter-worklet.js',
+  workletUrl: "/assets/limiter-worklet.js",
 });
 ```
 
@@ -88,17 +88,17 @@ Embedded default worklet loads are cached per audio context. Explicit `workletUr
 
 ### Options
 
-| Option | Type | Default | Description |
-| --- | --- | ---: | --- |
-| `threshold` | `number` | `-2` | Limiting threshold in dB. |
-| `attack` | `number` | `0` | Envelope attack time in seconds. |
-| `release` | `number` | `0.1` | Envelope release time in seconds. |
-| `preGain` | `number` | `0` | Input gain in dB before limiting. |
-| `postGain` | `number` | `0` | Output gain in dB after limiting. |
-| `bypass` | `boolean` | `false` | Pass input through without limiting. |
-| `lookahead` | `number` | `0.005` | Delay in seconds used for limiter lookahead. Must be between `0` and `10`. |
-| `workletUrl` | `string \| URL` | embedded Blob | Optional caller-managed worklet module URL. |
-| `channelCount` | `number` | `2` | Number of channels. |
+| Option         | Type            |       Default | Description                                                                |
+| -------------- | --------------- | ------------: | -------------------------------------------------------------------------- |
+| `threshold`    | `number`        |          `-2` | Limiting threshold in dB.                                                  |
+| `attack`       | `number`        |           `0` | Envelope attack time in seconds.                                           |
+| `release`      | `number`        |         `0.1` | Envelope release time in seconds.                                          |
+| `preGain`      | `number`        |           `0` | Input gain in dB before limiting.                                          |
+| `postGain`     | `number`        |           `0` | Output gain in dB after limiting.                                          |
+| `bypass`       | `boolean`       |       `false` | Pass input through without limiting.                                       |
+| `lookahead`    | `number`        |       `0.005` | Delay in seconds used for limiter lookahead. Must be between `0` and `10`. |
+| `workletUrl`   | `string \| URL` | embedded Blob | Optional caller-managed worklet module URL.                                |
+| `channelCount` | `number`        |           `2` | Number of channels.                                                        |
 
 The limiter uses one input and one output, with `channelCountMode: 'explicit'`.
 
@@ -107,7 +107,7 @@ The limiter uses one input and one output, with `channelCountMode: 'explicit'`.
 The returned node is an `AudioWorkletNode`, so all limiter controls are native `AudioParam`s:
 
 ```ts
-limiter.parameters.get('threshold')?.setValueAtTime(-8, context.currentTime);
+limiter.parameters.get("threshold")?.setValueAtTime(-8, context.currentTime);
 ```
 
 For convenience, the same params are also available as typed getters:
@@ -124,10 +124,10 @@ limiter.bypass.setValueAtTime(1, context.currentTime);
 ## Development
 
 ```sh
-npm install
-npm run type-check
-npm run test:browser
-npm run build
+bun install
+bun run type-check
+bun run test:browser
+bun run build
 ```
 
 The browser tests use Vitest Browser with Playwright and render through `OfflineAudioContext`, so they exercise the real AudioWorklet path.

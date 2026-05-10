@@ -2,27 +2,27 @@ const AudioWorkletNodeBase = globalThis.AudioWorkletNode ?? class {};
 
 export class LimiterAudioWorkletNode extends AudioWorkletNodeBase {
   get attack(): AudioParam {
-    return getRequiredParam(this, 'attack');
+    return getRequiredParam(this, "attack");
   }
 
   get release(): AudioParam {
-    return getRequiredParam(this, 'release');
+    return getRequiredParam(this, "release");
   }
 
   get threshold(): AudioParam {
-    return getRequiredParam(this, 'threshold');
+    return getRequiredParam(this, "threshold");
   }
 
   get preGain(): AudioParam {
-    return getRequiredParam(this, 'preGain');
+    return getRequiredParam(this, "preGain");
   }
 
   get postGain(): AudioParam {
-    return getRequiredParam(this, 'postGain');
+    return getRequiredParam(this, "postGain");
   }
 
   get bypass(): AudioParam {
-    return getRequiredParam(this, 'bypass');
+    return getRequiredParam(this, "bypass");
   }
 }
 

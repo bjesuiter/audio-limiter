@@ -33,7 +33,7 @@ Important paths:
 - `src/modern/LimiterAudioWorkletNode.ts` — typed `AudioWorkletNode` subclass with convenience getters.
 - `src/modern/workletCode.ts` — embedded AudioWorkletProcessor source string. Keep this browser/worklet-safe: no Node imports, no DOM assumptions beyond AudioWorklet globals.
 - `test/*.browser.test.ts` — active Vitest Browser tests. These are the authoritative tests.
-- `docs/limiter-audio-worklet/` — cloned reference implementation for comparison/research if present. Do not import from it in package code.
+- `docs/limiter-audio-worklet/` — vendored reference implementation for comparison/research. Do not import from it in package code.
 - `demo/` — old demo code; treat as stale until intentionally rebuilt.
 
 ## Public API rules
@@ -104,4 +104,4 @@ The package emits ESM, CJS, sourcemaps, and declarations into `dist/`. `dist/` i
 - The old Karma/Webpack/Jasmine suite was removed. Do not recreate it.
 - Legacy source files were removed in favor of `src/modern/*`.
 - `demo/` may still reference old patterns; verify before using it as documentation or test evidence.
-- `docs/limiter-audio-worklet/` is reference material only and may be untracked; confirm before committing vendored external code.
+- `docs/limiter-audio-worklet/` is reference material only; do not wire it into source, tests, or build output.
