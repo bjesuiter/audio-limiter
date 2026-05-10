@@ -35,8 +35,8 @@
     "worklet",
     "web-audio"
   ],
-  "author": "robert.kami88@gmail.com",
-  "license": "ISC",
+  "author": "bjesuiter@gmail.com",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^25.6.2",
     "@vitest/browser": "^4.1.5",
