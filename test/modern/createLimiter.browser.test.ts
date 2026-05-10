@@ -37,4 +37,31 @@ describe('createLimiter browser runtime', () => {
     expect(rendered.length).toBe(128);
     expect(rendered.numberOfChannels).toBe(1);
   });
+
+  it.runIf(supportsOfflineAudioWorklet())('reduces an over-threshold signal', async () => {
+    const context = new OfflineAudioContext({
+      numberOfChannels: 1,
+      length: 128,
+      sampleRate: 48_000,
+    });
+
+    const limiter = await createLimiter(context, {
+      channelCount: 1,
+      threshold: -6,
+      attack: 0,
+      release: 0,
+      lookahead: 0,
+    });
+
+    const source = new ConstantSourceNode(context, { offset: 2 });
+    source.connect(limiter).connect(context.destination);
+    source.start();
+
+    const rendered = await context.startRendering();
+    const samples = rendered.getChannelData(0);
+    const peak = samples.reduce((max, sample) => Math.max(max, Math.abs(sample)), 0);
+
+    expect(peak).toBeLessThanOrEqual(0.51);
+    expect(peak).toBeGreaterThan(0.45);
+  });
 });
