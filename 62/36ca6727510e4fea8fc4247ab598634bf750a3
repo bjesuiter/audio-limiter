@@ -1,0 +1,22 @@
+test/modern/worklet.browser.test.ts
+  ai_agent 1-52
+test/modern/processing.browser.test.ts
+  s_eb477ff7bf690e::t_4427ff9be0b83b 1-44,48-72,74-110,112,115-170
+  s_eb477ff7bf690e::t_4a408e53e122d9 45-47,73,111,113-114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "6236ca6727510e4fea8fc4247ab598634bf750a3",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
