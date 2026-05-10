@@ -1,0 +1,21 @@
+package.json
+  s_eb477ff7bf690e::t_f3adaca1df1323 3
+README.md
+  s_eb477ff7bf690e::t_d7ca550d03977f 1,3,5,7-9,13,15-16,19-32,34-39,41-42,44,46,48,50-51,54,56-59,62,64-74,76,78,80,82-83,86,88-94,97,99-103,106-108,110,112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "16ce6a911241e60c889d81200dc834d27bab1dae",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
