@@ -1,0 +1,63 @@
+test/processing.browser.test.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 1-2,7-9,12-15,30-33,35,66-88,90,92,103,113,123-172,201,207
+src/modern/createLimiter.ts
+  s_eb477ff7bf690e::t_5b57e144675041 84-86,94,134,149,157
+  s_eb477ff7bf690e::t_c1b7289a757738 66
+  s_eb477ff7bf690e::t_39e9ce7807057e 12,38-39,41-43,45-46,57,60,62-65,67,71-80,99-102
+  s_eb477ff7bf690e::t_45e5c48e943f8a 18
+  s_eb477ff7bf690e::t_edac20ecc15726 2,115,117-118,123-125,131,145-148,151-154,165-175,177,179-181
+  s_eb477ff7bf690e::t_c3a3f873336613 30-33,116,159-164
+  s_eb477ff7bf690e::t_639adc95d80648 55-56,81-83,87-93,95
+  s_eb477ff7bf690e::t_19c55ea5220728 119-122,126-130
+  s_eb477ff7bf690e::t_18720d5edee1f4 1,3,9,11,137,141,150,158
+test/worklet.browser.test.ts
+  s_eb477ff7bf690e::t_1979e7a21d0970 44,46
+  s_eb477ff7bf690e::t_ea00a7b1f4c06e 55-57,59-62
+  s_eb477ff7bf690e::t_1554dee9d0b7c4 58
+  s_eb477ff7bf690e::t_18720d5edee1f4 1-2,5-7,10-19,21-35,37-42,48-53,65-73,75-84
+README.md
+  s_eb477ff7bf690e::t_07991dacf09bbe 127-130
+  s_eb477ff7bf690e::t_18720d5edee1f4 16,58,67,83,91-101,110
+vitest.config.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 1-2,6,11
+src/modern/LimiterAudioWorkletNode.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 5,9,13,17,21,25
+package.json
+  s_eb477ff7bf690e::t_18720d5edee1f4 5-15
+  s_eb477ff7bf690e::t_cccc6935de4edd 32-35
+  s_eb477ff7bf690e::t_ce0cb344c47481 40-42,45
+src/modern/parameters.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 1,11-16
+src/modern/types.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 2-7,14-17
+tsdown.config.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 1,4-5
+src/index.ts
+  s_eb477ff7bf690e::t_18720d5edee1f4 1-2,8-9
+src/modern/workletCode.ts
+  s_eb477ff7bf690e::t_299f5d70496d6e 45-50
+test/createLimiter.browser.test.ts
+  s_eb477ff7bf690e::t_08f9a749cd8a07 11,18-20
+  s_eb477ff7bf690e::t_18720d5edee1f4 1-2,5-7,10,23,43-104
+  s_eb477ff7bf690e::t_324d1d9d6922db 24-42
+LICENSE
+  s_eb477ff7bf690e::t_bd342a870bd392 1-21
+AGENTS.md
+  s_eb477ff7bf690e::t_1dcece37eb9266 36,107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "1da9a5e84ac4a113a6ca83822710227903bedccf",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
