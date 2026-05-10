@@ -1,0 +1,42 @@
+test/createLimiter.browser.test.ts
+  s_eb477ff7bf690e::t_948f2f1768f5ae 3,24,29,36
+  s_eb477ff7bf690e::t_eeb0f702de5b60 12-23,25-28,30-35
+  s_eb477ff7bf690e::t_3a43317be8fe3a 47
+README.md
+  s_eb477ff7bf690e::t_a94c5f74ea13a5 87
+  s_eb477ff7bf690e::t_007340ca962eae 128-129
+test/worklet.browser.test.ts
+  s_eb477ff7bf690e::t_583c586ace9016 51-53
+  s_eb477ff7bf690e::t_89ef3691561e87 57-59
+src/modern/createLimiter.ts
+  s_eb477ff7bf690e::t_2e66f62d04f5b1 70-79
+  s_eb477ff7bf690e::t_eeb0f702de5b60 30-31,36-39
+  s_eb477ff7bf690e::t_48b0ff30d859dd 12,33,40-41,44
+  s_eb477ff7bf690e::t_4de57f9b76fd60 137-140,157
+  s_eb477ff7bf690e::t_d3f361554a4c3f 149,151-152
+.gitignore
+  s_eb477ff7bf690e::t_307c37ad07b608 7-9
+AGENTS.md
+  s_eb477ff7bf690e::t_899e744c1638ce 13-14,73-74
+  s_eb477ff7bf690e::t_227f3176126682 62
+package.json
+  s_eb477ff7bf690e::t_2e819eba227615 45
+src/modern/workletCode.ts
+  s_eb477ff7bf690e::t_93af738ca4ceac 1-2,4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "82aed0208447e85a4f91f88c018f2409e27ee411",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
