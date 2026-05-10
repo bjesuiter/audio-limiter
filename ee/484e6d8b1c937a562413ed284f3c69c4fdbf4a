@@ -1,0 +1,19 @@
+test/modern/createLimiter.browser.test.ts
+  s_eb477ff7bf690e::t_7cebd59b0fbadb 40-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "ee484e6d8b1c937a562413ed284f3c69c4fdbf4a",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
