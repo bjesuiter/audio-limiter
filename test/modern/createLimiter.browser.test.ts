@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import { createLimiter } from '../../src/index';
+
+function supportsOfflineAudioWorklet(): boolean {
+  return typeof OfflineAudioContext !== 'undefined'
+    && 'audioWorklet' in OfflineAudioContext.prototype;
+}
+
+describe('createLimiter browser runtime', () => {
+  it.runIf(supportsOfflineAudioWorklet())('creates a ready limiter node and renders offline audio', async () => {
+    const context = new OfflineAudioContext({
+      numberOfChannels: 1,
+      length: 128,
+      sampleRate: 48_000,
+    });
+
+    const limiter = await createLimiter(context, {
+      channelCount: 1,
+      threshold: -2,
+      lookahead: 0,
+    });
+
+    expect(limiter).toBeInstanceOf(AudioWorkletNode);
+    expect(limiter.parameters.has('threshold')).toBe(true);
+    expect(limiter.threshold).toBe(limiter.parameters.get('threshold'));
+    expect(limiter.attack).toBe(limiter.parameters.get('attack'));
+    expect(limiter.release).toBe(limiter.parameters.get('release'));
+    expect(limiter.preGain).toBe(limiter.parameters.get('preGain'));
+    expect(limiter.postGain).toBe(limiter.parameters.get('postGain'));
+    expect(limiter.bypass).toBe(limiter.parameters.get('bypass'));
+
+    const source = new ConstantSourceNode(context, { offset: 0.25 });
+    source.connect(limiter).connect(context.destination);
+    source.start();
+
+    const rendered = await context.startRendering();
+    expect(rendered.length).toBe(128);
+    expect(rendered.numberOfChannels).toBe(1);
+  });
+});
