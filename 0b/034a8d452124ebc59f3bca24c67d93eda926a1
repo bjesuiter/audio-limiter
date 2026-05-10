@@ -1,0 +1,22 @@
+package.json
+  s_eb477ff7bf690e::t_b78391740d6aab 41,48
+  s_eb477ff7bf690e::t_b2bafa32cf3a63 44-45
+bun.lock
+  ai_agent 8-16,51-126,175,267-270,311-312,323,327
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "0b034a8d452124ebc59f3bca24c67d93eda926a1",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
