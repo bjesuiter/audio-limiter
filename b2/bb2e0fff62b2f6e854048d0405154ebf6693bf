@@ -1,0 +1,103 @@
+test/createLimiter.browser.test.ts
+  s_eb477ff7bf690e::t_64ec7649c5e9a1 2,10-34
+docs/limiter-audio-worklet/config/lint-staged/config.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-3
+docs/limiter-audio-worklet/LICENSE
+  s_eb477ff7bf690e::t_a8f698499619dd 1-21
+docs/limiter-audio-worklet/src/interfaces/index.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1
+src/index.ts
+  s_eb477ff7bf690e::t_b26129dcb7cb7f 1,3-8
+docs/limiter-audio-worklet/config/webpack/worklet-es5.mjs
+  s_eb477ff7bf690e::t_a8f698499619dd 1-43
+docs/limiter-audio-worklet/config/tslint/src.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-3
+docs/limiter-audio-worklet/src/module.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-62
+docs/limiter-audio-worklet/.gitignore
+  s_eb477ff7bf690e::t_a8f698499619dd 1-3
+docs/limiter-audio-worklet/src/types/index.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-6
+docs/limiter-audio-worklet/config/vitest/unit.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-48
+bun.lock
+  ai_agent 1-303
+docs/limiter-audio-worklet/src/types/any-limiter-audio-worklet-node-options.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-7
+docs/limiter-audio-worklet/src/interfaces/limiter-audio-worklet-node.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-3
+test/worklet.browser.test.ts
+  s_eb477ff7bf690e::t_64ec7649c5e9a1 2
+docs/limiter-audio-worklet/.husky/commit-msg
+  s_eb477ff7bf690e::t_a8f698499619dd 1
+docs/limiter-audio-worklet/package-lock.json
+  ai_agent 1-16803
+docs/limiter-audio-worklet/config/eslint/src.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-6
+docs/limiter-audio-worklet/config/rollup/bundle.mjs
+  s_eb477ff7bf690e::t_a8f698499619dd 1-102
+docs/limiter-audio-worklet/.github/workflows/test.yml
+  s_eb477ff7bf690e::t_a8f698499619dd 1-46
+docs/limiter-audio-worklet/src/worklet/worklet.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-2
+src/modern/createLimiter.ts
+  s_eb477ff7bf690e::t_4f56bf0a62745a 17-20
+  s_eb477ff7bf690e::t_fb8567e4c335a0 3-8,11,21-50,71,83
+docs/limiter-audio-worklet/README.md
+  s_eb477ff7bf690e::t_a8f698499619dd 1-5
+docs/limiter-audio-worklet/package.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-76
+docs/limiter-audio-worklet/src/types/limiter-audio-worklet-node-options.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-6
+AGENTS.md
+  s_eb477ff7bf690e::t_d3698ae34f1a77 1-34,36-75,77-107
+  s_eb477ff7bf690e::t_d9450f27dffbee 35,76
+docs/limiter-audio-worklet/src/types/fixed-options.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1
+docs/limiter-audio-worklet/src/types/native-limiter-audio-worklet-node-options.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-6
+docs/limiter-audio-worklet/src/types/native-limiter-audio-worklet-node.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-3
+docs/limiter-audio-worklet/test/unit/module.js
+  s_eb477ff7bf690e::t_a8f698499619dd 1-92
+src/modern/types.ts
+  s_eb477ff7bf690e::t_72ee1efb281fc4 9-14,32
+docs/limiter-audio-worklet/config/eslint/test.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-15
+docs/limiter-audio-worklet/.husky/pre-commit
+  s_eb477ff7bf690e::t_a8f698499619dd 1
+test/processing.browser.test.ts
+  s_eb477ff7bf690e::t_64ec7649c5e9a1 2
+vitest.config.ts
+  s_eb477ff7bf690e::t_64ec7649c5e9a1 6
+docs/limiter-audio-worklet/config/prettier/config.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-8
+docs/limiter-audio-worklet/config/webpack/worklet-es2019.js
+  s_eb477ff7bf690e::t_a8f698499619dd 1-87
+docs/limiter-audio-worklet/src/tsconfig.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-6
+tsconfig.json
+  s_eb477ff7bf690e::t_9e04143d05bba3 18
+README.md
+  s_eb477ff7bf690e::t_b8ace23a5e9e9a 62-88
+docs/limiter-audio-worklet/config/eslint/config.json
+  s_eb477ff7bf690e::t_a8f698499619dd 1-10
+docs/limiter-audio-worklet/src/types/any-audio-worklet-node-options.ts
+  s_eb477ff7bf690e::t_a8f698499619dd 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "b2bb2e0fff62b2f6e854048d0405154ebf6693bf",
+  "prompts": {},
+  "sessions": {
+    "s_eb477ff7bf690e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "019e11d9-f390-748d-9055-6445f2158fea",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Benjamin Jesuiter <bjesuiter@gmail.com>"
+    }
+  }
+}
