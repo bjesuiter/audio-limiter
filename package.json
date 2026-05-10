@@ -42,7 +42,7 @@
     "format:check": "oxfmt --check src test tsdown.config.ts vitest.config.ts AGENTS.md README.md package.json",
     "test": "vitest run",
     "test:browser": "vitest run --browser",
-    "prepack": "bun run clean && bun run type-check && bun run build"
+    "prepack": "bun run clean && bun run format:check && bun run lint && bun run type-check && bun run test:browser && bun run build"
   },
   "devDependencies": {
     "@types/node": "^25.6.2",

@@ -48,9 +48,15 @@ describe("LimiterAudioWorkletNode browser configuration", () => {
     await expect(createLimiter(context, { channelCountMode: "max" })).rejects.toThrow(
       /channelCountMode/,
     );
+    await expect(createLimiter(context, { outputChannelCount: [1] })).rejects.toThrow(
+      /channelCount/,
+    );
     await expect(
       createLimiter(context, { channelCount: 2, outputChannelCount: [1] }),
     ).rejects.toThrow(/channelCount/);
+    await expect(
+      createLimiter(context, { channelCount: 2, outputChannelCount: [2, 2] }),
+    ).rejects.toThrow(/outputChannelCount/);
     await expect(createLimiter(context, { lookahead: -0.001 })).rejects.toThrow(/lookahead/);
     await expect(createLimiter(context, { lookahead: Number.NaN })).rejects.toThrow(/lookahead/);
     await expect(createLimiter(context, { threshold: 1 })).rejects.toThrow(/threshold/);

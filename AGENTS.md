@@ -10,6 +10,8 @@ Prefer:
 
 ```sh
 bun install
+bun run format:check
+bun run lint
 bun run type-check
 bun run test:browser
 bun run build
@@ -57,7 +59,7 @@ Important contracts:
 - `createLimiterNode()` is synchronous and may throw if called before the processor is registered.
 - `loadLimiterWorklet()` accepts loader-only options: currently `{ workletUrl?: string | URL }`.
 - `CreateLimiterOptions` should remain `CreateLimiterNodeOptions & LoadLimiterWorkletOptions`.
-- Cache only embedded/default worklet loads per `BaseAudioContext`; explicit `workletUrl` calls should always call `audioWorklet.addModule()`.
+- Cache worklet registration per `BaseAudioContext`; if `workletUrl` is provided for the first load, that URL is used, and later loads for the same context reuse the existing registration.
 - Keep the flexible parameter model: `threshold`, `attack`, `release`, `preGain`, `postGain`, `bypass`, `lookahead`.
 - Do not reintroduce `AudioContext.prototype` patching or the old sync wrapper API.
 
@@ -68,6 +70,8 @@ Use Vitest Browser. The tests render through real browser `OfflineAudioContext`/
 Run before committing relevant changes:
 
 ```sh
+bun run format:check
+bun run lint
 bun run type-check
 bun run test:browser
 bun run build

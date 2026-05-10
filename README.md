@@ -84,7 +84,7 @@ await loadLimiterWorklet(context, {
 });
 ```
 
-Embedded default worklet loads are cached per audio context. Explicit `workletUrl` calls are always passed through to `audioWorklet.addModule()`.
+Worklet registration is cached per audio context. If `workletUrl` is provided for the first load, that URL is used; later loads for the same context reuse the existing registration.
 
 ### Options
 
@@ -125,6 +125,8 @@ limiter.bypass.setValueAtTime(1, context.currentTime);
 
 ```sh
 bun install
+bun run format:check
+bun run lint
 bun run type-check
 bun run test:browser
 bun run build

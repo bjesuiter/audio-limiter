@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createLimiter, createLimiterNode, loadLimiterWorklet } from "../src/index";
+import { limiterWorkletCode } from "../src/modern/workletCode";
 
 function supportsOfflineAudioWorklet(): boolean {
   return (
@@ -8,6 +9,31 @@ function supportsOfflineAudioWorklet(): boolean {
 }
 
 describe("createLimiter browser runtime", () => {
+  it.runIf(supportsOfflineAudioWorklet())(
+    "reuses explicit worklet URL loads per context",
+    async () => {
+      const context = new OfflineAudioContext({
+        numberOfChannels: 1,
+        length: 128,
+        sampleRate: 48_000,
+      });
+      const blob = new Blob([limiterWorkletCode], {
+        type: "application/javascript; charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+
+      try {
+        await loadLimiterWorklet(context, { workletUrl: url });
+        await loadLimiterWorklet(context, { workletUrl: url });
+        const limiter = createLimiterNode(context, { channelCount: 1, lookahead: 0 });
+
+        expect(limiter).toBeInstanceOf(AudioWorkletNode);
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    },
+  );
+
   it.runIf(supportsOfflineAudioWorklet())("rejects invalid explicit worklet URLs", async () => {
     const context = new OfflineAudioContext({
       numberOfChannels: 1,
@@ -18,6 +44,7 @@ describe("createLimiter browser runtime", () => {
     await expect(loadLimiterWorklet(context, { workletUrl: null as never })).rejects.toThrow(
       /workletUrl/,
     );
+    await expect(loadLimiterWorklet(context, { workletUrl: "" })).rejects.toThrow(/workletUrl/);
   });
 
   it.runIf(supportsOfflineAudioWorklet())(

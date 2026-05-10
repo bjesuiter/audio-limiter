@@ -4,5 +4,8 @@ demo/node_modules
 /demo/node_modules
 /dist
 /.pi
+/package-lock.json
+/pnpm-lock.yaml
+/yarn.lock
 /src/**/*.js
 src/*.js
