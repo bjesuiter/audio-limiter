@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createLimiter } from '../../src/index';
+import { createLimiter, createLimiterNode, loadLimiterWorklet } from '../src/index';
 
 function supportsOfflineAudioWorklet(): boolean {
   return typeof OfflineAudioContext !== 'undefined'
@@ -7,6 +7,31 @@ function supportsOfflineAudioWorklet(): boolean {
 }
 
 describe('createLimiter browser runtime', () => {
+  it.runIf(supportsOfflineAudioWorklet())('supports explicit preload followed by synchronous node creation', async () => {
+    const context = new OfflineAudioContext({
+      numberOfChannels: 1,
+      length: 128,
+      sampleRate: 48_000,
+    });
+
+    await loadLimiterWorklet(context);
+    const limiter = createLimiterNode(context, {
+      channelCount: 1,
+      threshold: -2,
+      lookahead: 0,
+    });
+
+    expect(limiter).toBeInstanceOf(AudioWorkletNode);
+    expect(limiter.threshold.value).toBe(-2);
+
+    const source = new ConstantSourceNode(context, { offset: 0.25 });
+    source.connect(limiter).connect(context.destination);
+    source.start();
+
+    const rendered = await context.startRendering();
+    expect(rendered.length).toBe(128);
+  });
+
   it.runIf(supportsOfflineAudioWorklet())('creates a ready limiter node and renders offline audio', async () => {
     const context = new OfflineAudioContext({
       numberOfChannels: 1,

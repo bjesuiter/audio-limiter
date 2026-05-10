@@ -1,16 +1,54 @@
 import { LimiterAudioWorkletNode } from './LimiterAudioWorkletNode';
 import { limiterWorkletCode } from './workletCode';
-import type { CreateLimiterOptions, LimiterParameterName } from './types';
+import type {
+  CreateLimiterNodeOptions,
+  CreateLimiterOptions,
+  LimiterParameterName,
+  LoadLimiterWorkletOptions,
+} from './types';
 
 const processorName = 'limiter-processor';
-const loadedContexts = new WeakSet<BaseAudioContext>();
+const loadedEmbeddedWorkletContexts = new WeakSet<BaseAudioContext>();
 
 export async function createLimiter(
   context: BaseAudioContext,
   options: CreateLimiterOptions = {},
 ): Promise<LimiterAudioWorkletNode> {
+  await loadLimiterWorklet(
+    context,
+    options.workletUrl === undefined ? {} : { workletUrl: options.workletUrl },
+  );
+  return createLimiterNode(context, options);
+}
+
+export async function loadLimiterWorklet(
+  context: BaseAudioContext,
+  options: LoadLimiterWorkletOptions = {},
+): Promise<void> {
+  if (options.workletUrl) {
+    await context.audioWorklet.addModule(options.workletUrl.toString());
+    return;
+  }
+
+  if (loadedEmbeddedWorkletContexts.has(context)) return;
+
+  const blob = new Blob([limiterWorkletCode], {
+    type: 'application/javascript; charset=utf-8',
+  });
+  const url = URL.createObjectURL(blob);
+  try {
+    await context.audioWorklet.addModule(url);
+    loadedEmbeddedWorkletContexts.add(context);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+export function createLimiterNode(
+  context: BaseAudioContext,
+  options: CreateLimiterNodeOptions = {},
+): LimiterAudioWorkletNode {
   validateOptions(options);
-  await loadLimiterWorklet(context, options.workletUrl);
 
   const channelCount = options.channelCount ?? 2;
   const parameterData = createParameterData(options);
@@ -29,31 +67,8 @@ export async function createLimiter(
   });
 }
 
-async function loadLimiterWorklet(
-  context: BaseAudioContext,
-  workletUrl?: string | URL,
-): Promise<void> {
-  if (loadedContexts.has(context) && !workletUrl) return;
-
-  if (workletUrl) {
-    await context.audioWorklet.addModule(workletUrl.toString());
-    return;
-  }
-
-  const blob = new Blob([limiterWorkletCode], {
-    type: 'application/javascript; charset=utf-8',
-  });
-  const url = URL.createObjectURL(blob);
-  try {
-    await context.audioWorklet.addModule(url);
-    loadedContexts.add(context);
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
-
 function createParameterData(
-  options: CreateLimiterOptions,
+  options: CreateLimiterNodeOptions,
 ): Partial<Record<LimiterParameterName, number>> {
   return {
     ...(options.attack === undefined ? {} : { attack: options.attack }),
@@ -65,7 +80,7 @@ function createParameterData(
   };
 }
 
-function validateOptions(options: CreateLimiterOptions): void {
+function validateOptions(options: CreateLimiterNodeOptions): void {
   const lookahead = options.lookahead ?? 0.005;
   if (lookahead < 0 || lookahead > 10) {
     throw new Error('Limiter lookahead must be between 0 and 10 seconds.');

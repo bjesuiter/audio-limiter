@@ -1,4 +1,9 @@
-export { createLimiter } from './modern/createLimiter';
+export { createLimiter, createLimiterNode, loadLimiterWorklet } from './modern/createLimiter';
 export { LimiterAudioWorkletNode } from './modern/LimiterAudioWorkletNode';
-export type { CreateLimiterOptions, LimiterParameterName } from './modern/types';
+export type {
+  CreateLimiterNodeOptions,
+  CreateLimiterOptions,
+  LimiterParameterName,
+  LoadLimiterWorkletOptions,
+} from './modern/types';
 export { limiterParameterDescriptors } from './modern/parameters';

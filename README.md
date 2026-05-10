@@ -59,6 +59,33 @@ const limiter = await createLimiter(context, {
 });
 ```
 
+### Advanced preload API
+
+For most apps, use `createLimiter()`. If you want to preload the worklet during app setup and construct nodes synchronously later, use the advanced helpers:
+
+```ts
+import { createLimiterNode, loadLimiterWorklet } from 'audio-limiter';
+
+await loadLimiterWorklet(context);
+
+const limiter = createLimiterNode(context, {
+  threshold: -6,
+  lookahead: 0.005,
+});
+```
+
+`createLimiterNode()` assumes the processor was already registered with `loadLimiterWorklet()`. If it is called first, the browser will throw because the worklet processor name is not known yet.
+
+`loadLimiterWorklet()` accepts only loader options:
+
+```ts
+await loadLimiterWorklet(context, {
+  workletUrl: '/assets/limiter-worklet.js',
+});
+```
+
+Embedded default worklet loads are cached per audio context. Explicit `workletUrl` calls are always passed through to `audioWorklet.addModule()`.
+
 ### Options
 
 | Option | Type | Default | Description |

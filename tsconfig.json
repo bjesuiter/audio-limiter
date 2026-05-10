@@ -15,5 +15,5 @@
     "exactOptionalPropertyTypes": true,
     "types": []
   },
-  "include": ["src/index.ts", "src/modern/**/*.ts", "tsdown.config.ts", "vitest.config.ts", "test/modern/**/*.ts"]
+  "include": ["src/index.ts", "src/modern/**/*.ts", "tsdown.config.ts", "vitest.config.ts", "test/**/*.browser.test.ts"]
 }

@@ -6,12 +6,15 @@ export type LimiterParameterName =
   | 'postGain'
   | 'bypass';
 
-export interface CreateLimiterOptions
+export interface LoadLimiterWorkletOptions {
+  /** Optional caller-managed worklet URL. When omitted, an embedded Blob worklet is used. */
+  workletUrl?: string | URL;
+}
+
+export interface CreateLimiterNodeOptions
   extends Omit<AudioWorkletNodeOptions, 'processorOptions' | 'parameterData'> {
   /** Lookahead delay in seconds. Used to delay audio so gain reduction can react to the detected envelope. */
   lookahead?: number;
-  /** Optional caller-managed worklet URL. When omitted, an embedded Blob worklet is used. */
-  workletUrl?: string | URL;
   /** Initial threshold in dB. */
   threshold?: number;
   /** Initial attack time in seconds. */
@@ -25,6 +28,8 @@ export interface CreateLimiterOptions
   /** Initial bypass state. */
   bypass?: boolean;
 }
+
+export type CreateLimiterOptions = CreateLimiterNodeOptions & LoadLimiterWorkletOptions;
 
 export interface LimiterProcessorOptions {
   lookahead: number;

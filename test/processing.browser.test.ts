@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createLimiter, type CreateLimiterOptions } from '../../src/index';
+import { createLimiter, type CreateLimiterOptions } from '../src/index';
 
 const sampleRate = 44_100;
 
