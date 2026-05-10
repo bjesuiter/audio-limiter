@@ -1,6 +1,6 @@
 {
   "name": "audio-limiter",
-  "version": "0.0.0-modern-dev",
+  "version": "0.1.0",
   "description": "Modern AudioWorklet limiter with explicit factory API",
   "type": "module",
   "main": "./dist/index.cjs",
