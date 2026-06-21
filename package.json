@@ -1,6 +1,6 @@
 {
-  "name": "audio-limiter",
-  "version": "0.1.0",
+  "name": "@bjesuiter/audio-limiter",
+  "version": "2.0.0",
   "description": "Modern AudioWorklet limiter with explicit factory API",
   "keywords": [
     "audio",
